@@ -1,32 +1,51 @@
-from flask import Flask, render_template
-import json
-import requests
-from getpass import getpass
-
+from flask import Flask, redirect, url_for, session, request, jsonify, render_template
+from authlib.integrations.flask_client import OAuth
 
 app = Flask(__name__)
+app.debug = True
+app.secret_key = 'development'
+oauth = OAuth(app)
+
+oauth.register(
+    name='suap',
+    client_id= 'client_id',
+    client_secret= 'client_secret',
+    api_base_url='https://suap.ifrn.edu.br/api/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://suap.ifrn.edu.br/o/token/',
+    authorize_url='https://suap.ifrn.edu.br/o/authorize/',
+    fetch_token=lambda: session.get('suap_token')
+)
 
 @app.route('/')
 def index():
-    api_url = "https://suap.ifrn.edu.br/api/"
-    user = "20201181110005"
-    password = "32542395rR@"
-    ano_letivo = "2022"
-    periodo_letivo = "1"
+    if 'suap_token' in session:
+        ano_letivo = session['ano_letivo']
+        periodo_letivo = 1
+        user_data = oauth.suap.get('v2/minhas-informacoes/meus-dados')
+        boletim_data = oauth.suap.get(f'/api/v2/minhas-informacoes/boletim/{ano_letivo}/{periodo_letivo}/')
+        print(user_data.json())
+        print(boletim_data.json()) 
+        return render_template('userdata.html', user_data=user_data.json(), boletim_data=boletim_data.json())
+    else:
+        return render_template('index.html')
+    
+@app.route('/login', methods=['POST'])
+def login():
+    session['ano_letivo'] = request.form['ano_letivo']
+    redirect_uri = url_for('auth', _external=True)
+    print(redirect_uri)
+    return oauth.suap.authorize_redirect(redirect_uri)
 
-    user_data = {"username": user, "password": password}
+@app.route('/logout')
+def logout():
+    session.pop('suap_token', None)
+    session.pop('ano_letivo', None)
+    return redirect(url_for('index'))
 
-    # gerar token
-    response = requests.post(api_url+"v2/autenticacao/token/", json=user_data)
-
-    token = response.json()["access"]
-
-    headers = {
-            "Authorization": f'Bearer {token}'
-    }
-
-    response = requests.get(f"{api_url}v2/minhas-informacoes/boletim/{ano_letivo}/{periodo_letivo}/", json=user_data, headers=headers)
-    print(response.json())
-
-    boletim = response.json()
-    return render_template('index.html', boletim=boletim)
+@app.route('/login/authorized')
+def auth():
+    token = oauth.suap.authorize_access_token()
+    session['suap_token'] = token
+    return redirect(url_for('index'))

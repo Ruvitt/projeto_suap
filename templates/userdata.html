@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <h2> {% block title %} {{user_data['nome_usual']}} {% endblock  %}</h2>
+
+    <img src="https://suap.ifrn.edu.br{{ user_data['url_foto_150x200'] }}" alt="foto">
+
+    <p><b>ID de aluno</b>: {{user_data['id']}}</p>
+    <p><b>Matricula</b>: {{user_data['matricula']}}</p>
+    <p><b>Nome completo</b>: {{user_data['vinculo']['nome']}}</p>
+    <p><b>CPF</b>: {{user_data['cpf']}}</p>
+    <p><b>Data de nascimento</b>: {{user_data['data_nascimento']}}</p>
+    <p><b>Email</b>: {{user_data['email']}}</p>
+    <p><b>Tipo de vinculo</b>: {{user_data['tipo_vinculo']}}</p>
+    <p><b>Curso</b>: {{user_data['vinculo']['curso']}}</p>
+    <p><b>Campus</b>: {{user_data['vinculo']['campus']}}</p>
+    <p><b>Situação</b>: {{user_data['vinculo']['situacao']}}</p>
+    <p><b>curriculo lattes</b>: <a href="{{user_data['vinculo']['curriculo_lattes']}}">{{user_data['vinculo']['curriculo_lattes']}}</a></p>
+
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>2º Semestre</th>
+                <th>1º Bimestre</th>
+                <th>2º Bimestre</th>
+                <th>3º Bimestre</th>
+                <th>4º Bimestre</th>
+                <th>Média Final</th>
+                <th>Carga horaria</th>
+                <th>Total de faltas</th>
+                <th>Situação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in boletim_data %}
+            <tr>
+                <td><b>{{ field['disciplina'] }}</b></td>
+                <td>{{ field['segundo_semestre'] }}</td>
+                <td>{{ field['nota_etapa_1']['nota'] }}</td>
+                <td>{{ field['nota_etapa_2']['nota'] }}</td>
+                <td>{{ field['nota_etapa_3']['nota'] }}</td>
+                <td>{{ field['nota_etapa_4']['nota'] }}</td>
+                <td>{{ field['media_final_disciplina'] }}</td>
+                <td>{{ field['carga_horaria'] }}</td>
+                <td>{{ field['numero_faltas'] }}</td>
+                <td>{{ field['situacao'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{{url_for('logout')}}">Logout</a></p>
+{% endblock  %}
