@@ -4,11 +4,34 @@
     teste
 {% endblock  %}
 
-{% block conteudo %}
-    <h1>login</h1>
+{% block css %}
+    <style>
+        body {
+            background-color: #008000;
+        }
+        .card {
+            width: 350px;
+        }
+        .btn {
+            background-color: #007bff; 
+            color: white;
+            width: 150px;
+        }
+    </style>
+{% endblock  %}
 
-    <form action="{{url_for('login')}}" method="post">
-        <input type="text" name="ano_letivo" placeholder="ano letivo">
-        <input type="submit" value="Login">
-    </form>
+{% block conteudo %}
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card">
+            <div class="card-img-top">
+                <img src="../static/img/suap-logo.png" class="img-fluid" alt="logo do suap">
+            </div>
+            <div class="card-body text-center"> 
+                <h1 class="card-title mb-3">Gerador de boletim</h1>
+                <hr>
+
+                <a href="{{url_for('login')}}" class="btn">Acessar</a>
+            </div>
+        </div>
+    </div>
 {% endblock  %}

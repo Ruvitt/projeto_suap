@@ -21,7 +21,7 @@ oauth.register(
 @app.route('/')
 def index():
     if 'suap_token' in session:
-        ano_letivo = session['ano_letivo']
+        ano_letivo = 2022
         periodo_letivo = 1
         user_data = oauth.suap.get('v2/minhas-informacoes/meus-dados')
         boletim_data = oauth.suap.get(f'/api/v2/minhas-informacoes/boletim/{ano_letivo}/{periodo_letivo}/')
@@ -31,9 +31,8 @@ def index():
     else:
         return render_template('index.html')
     
-@app.route('/login', methods=['POST'])
+@app.route('/login')
 def login():
-    session['ano_letivo'] = request.form['ano_letivo']
     redirect_uri = url_for('auth', _external=True)
     print(redirect_uri)
     return oauth.suap.authorize_redirect(redirect_uri)
