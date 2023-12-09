@@ -1,87 +1,152 @@
 {% extends 'base.html' %}
+{% block css %}
+<style>
+    body {
+        background-color: #008000;
+    }
+</style>
+{% endblock  %}
 
 {% block conteudo %}
-    <section class="row d-flex align-items-center justify-content-center pt-5 mb-3">
-        <div class="col-3">
-            <div class="d-flex justify-content-center align-items-center">
-                <img class="img-fluid rounded-5" src="https://suap.ifrn.edu.br{{ user_data['url_foto_150x200'] }}" alt="foto de perfil">
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="text-center"> {% block title %} {{user_data['nome_usual']}} {% endblock %}</h2>
+<main class="container card my-5 px-5 pt-3 pb-1">
+    <div class="card">
+        <section class="row d-flex align-items-center justify-content-center pt-3 mb-3">
+            <div class="col-3 border-end me-4">
+                <div class="d-flex justify-content-center align-items-center">
+                    <img class="img-fluid rounded-5" src="https://suap.ifrn.edu.br{{ user_data['url_foto_150x200'] }}" alt="foto de perfil">
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mt-2"> {% block title %} {{user_data['nome_usual']}} {% endblock %}</h2>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-9">
-            <div class="row">
-                <div class="col-4">
-                    <p><b>ID de aluno</b>: {{user_data['id']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Matricula</b>: {{user_data['matricula']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>CPF</b>: {{user_data['cpf']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Data de nascimento</b>: {{user_data['data_nascimento']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Email</b>: {{user_data['email']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Tipo de vinculo</b>: {{user_data['tipo_vinculo']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Curso</b>: {{user_data['vinculo']['curso']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Campus</b>: {{user_data['vinculo']['campus']}}</p>
-                </div>
-                <div class="col-4">
-                    <p><b>Situação</b>: {{user_data['vinculo']['situacao']}}</p>
-                </div>
-                <div class="col-12">
-                    <p><b>curriculo lattes</b>: <a href="{{user_data['vinculo']['curriculo_lattes']}}">{{user_data['vinculo']['curriculo_lattes']}}</a></p>
+            <div class="col-8 ms-4">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <h2 class="text-center">Dados pessoais</h2>
+                        <hr>
+                    </div>
+                    <div class="col-3">
+                        <p><b>ID de aluno</b>: {{user_data['id']}}</p>
+                    </div>
+                    <div class="col-4">
+                        <p><b>Matricula</b>: {{user_data['matricula']}}</p>
+                    </div>
+                    <div class="col-5">
+                        <p><b>CPF</b>: {{user_data['cpf']}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p><b>Data de nascimento</b>: {{user_data['data_nascimento']}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p><b>Email</b>: {{user_data['email']}}</p>
+                    </div>
+                    <div class="col-3">
+                        <p><b>Tipo de vinculo</b>: {{user_data['tipo_vinculo']}}</p>
+                    </div>
+                    <div class="col-9">
+                        <p><b>Curso</b>: {{user_data['vinculo']['curso']}}</p>
+                    </div>
+                    <div class="col-4">
+                        <p><b>Campus</b>: {{user_data['vinculo']['campus']}}</p>
+                    </div>
+                    <div class="col-8">
+                        <p><b>Situação</b>: {{user_data['vinculo']['situacao']}}</p>
+                    </div>
+                    <div class="col-12">
+                        <p><b>curriculo lattes</b>: <a href="{{user_data['vinculo']['curriculo_lattes']}}">{{user_data['vinculo']['curriculo_lattes']}}</a></p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <section class="mb-3">
-        <div>
+        <div class="mt-4 mb-3">
             <h2 class="text-center">Boletim</h2>
+        </div>
+
+        <div class="mb-4">
+            <form method="post" action="{{ url_for('atualizar_boletim') }}">
+                <div class="input-group">
+                    <select class="form-select" id="ano_letivo" name="ano_letivo" aria-label="">
+                    {% for ano in anos_letivos %}
+                        <option value="{{ ano }}">{{ ano }}</option>
+                    {% endfor %}
+                    </select>
+                    <button class="btn btn-success" type="submit">Vizualizar</button>
+                </div>
+            </form>
         </div>
         
         <div class="table-responsive">
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
-                        <th>Disciplina</th>
-                        <th>2º Semestre</th>
-                        <th>1º Bimestre</th>
-                        <th>2º Bimestre</th>
-                        <th>3º Bimestre</th>
-                        <th>4º Bimestre</th>
-                        <th>Média Final</th>
-                        <th>Carga horaria</th>
-                        <th>Total de faltas</th>
-                        <th>Situação</th>
+                        <th class="align-middle">Disciplina</th>
+                        <th class="align-middle">2º Semestre</th>
+                        <th class="align-middle">1º Bimestre</th>
+                        <th class="align-middle">2º Bimestre</th>
+                        <th class="align-middle">3º Bimestre</th>
+                        <th class="align-middle">4º Bimestre</th>
+                        <th class="align-middle">Média Final</th>
+                        <th class="align-middle">Carga horaria</th>
+                        <th class="align-middle">Total de faltas</th>
+                        <th class="align-middle px-3">Situação</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for field in boletim_data %}
                     <tr>
-                        <td><b>{{ field['disciplina'] }}</b></td>
-                        <td>{{ field['segundo_semestre'] }}</td>
-                        <td>{{ field['nota_etapa_1']['nota'] }}</td>
-                        <td>{{ field['nota_etapa_2']['nota'] }}</td>
-                        <td>{{ field['nota_etapa_3']['nota'] }}</td>
-                        <td>{{ field['nota_etapa_4']['nota'] }}</td>
-                        <td>{{ field['media_final_disciplina'] }}</td>
-                        <td>{{ field['carga_horaria'] }}</td>
-                        <td>{{ field['numero_faltas'] }}</td>
-                        <td>{{ field['situacao'] }}</td>
+                        <td class="align-middle"><b>{{ field['disciplina'] }}</b></td>
+                        <td class="align-middle me-3">
+                            {% if field['segundo_semestre'] == False %}
+                                Matéria ofertada no segundo semestre
+                            {% elif field['segundo_semestre'] == True %}
+                                Materia ofertada apenas no primeiro semestre
+                            {% else %}
+                                {{ field['segundo_semestre'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if field['nota_etapa_1']['nota'] == None %}
+                                <!-- Deixe vazio se a nota for None -->
+                            {% else %}
+                                {{ field['nota_etapa_1']['nota'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if field['nota_etapa_2']['nota'] == None %}
+                                <!-- Deixe vazio se a nota for None -->
+                            {% else %}
+                                {{ field['nota_etapa_2']['nota'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if field['nota_etapa_3']['nota'] == None %}
+                                <!-- Deixe vazio se a nota for None -->
+                            {% else %}
+                                {{ field['nota_etapa_3']['nota'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if field['nota_etapa_4']['nota'] == None %}
+                                <!-- Deixe vazio se a nota for None -->
+                            {% else %}
+                                {{ field['nota_etapa_4']['nota'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if field['media_final_disciplina'] == None %}
+                                <!-- Deixe vazio se a nota for None -->
+                            {% else %}
+                                {{ field['media_final_disciplina'] }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">{{ field['carga_horaria'] }}h</td>
+                        <td class="align-middle">{{ field['numero_faltas'] }}</td>
+                        <td class="align-middle px-3">{{ field['situacao'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -89,5 +154,33 @@
         </div>
     </section>
 
-    <a class="btn btn-danger text-center mb-5" href="{{url_for('logout')}}">Logout</a>
+    <section class="exit">
+        <div class="mb-4">
+            <hr>
+            <h3 class="text-center">Clique no botão abaixo para sair do sistema</h3>
+        </div>
+        <div class="d-flex justify-content-center mb-4">
+            <a class="btn btn-danger btn-lg text-center align-middle" href="{{url_for('logout')}}">Logout</a>
+        </div>
+    </section>
+</main>
+{% endblock  %}
+{% block scripts %}
+<script>
+window.onload = function() {
+    var ano_letivo_selecionado = "{{ ano_letivo_selecionado }}"; // Obtenha o valor do ano letivo selecionado
+    var select = document.getElementById("ano_letivo"); // Obtenha o elemento select
+
+    // Percorra todas as opções do elemento select
+    for(var i = 0; i < select.options.length; i++) {
+        var option = select.options[i];
+
+        // Se o valor da opção for igual ao ano letivo selecionado, adicione o atributo 'selected'
+        if(option.value == ano_letivo_selecionado) {
+            option.selected = true;
+            break;
+        }
+    }
+}
+</script>
 {% endblock  %}
